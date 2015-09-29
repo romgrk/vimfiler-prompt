@@ -26,10 +26,6 @@ fu! VimFilerPrompt (...) " {{{
     call b:vimfiler_prompt.loop()
 endfu " }}}
 
-let g:vimfiler_prompt = {
-    \ 'edit': 'edit'
-    \}
-
 let s:f = {}
 fu! s:f.new () dict " {{{
     return deepcopy(self.init())
