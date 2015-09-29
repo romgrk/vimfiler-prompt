@@ -7,9 +7,11 @@ Navigate VimFiler by typing + autocompletion
 
 ## Usage
 
+Command: `VimFilerPrompt`
+
 Map something to `VimFilerPrompt`, and that's it.
 
-```vimscript
+```viml
 nmap <buffer> i :VimFilerPrompt<CR>
 ```
 
@@ -25,7 +27,7 @@ nmap <buffer> i :VimFilerPrompt<CR>
 
 ## Highlight groups 
 
-```vimscript
+```viml
 hi! FilerCursor   guifg=#000000 guibg=#efefef gui=NONE   
 
 hi! FilerSelected guifg=#efefef guibg=#599eff gui=NONE
