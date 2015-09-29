@@ -21,10 +21,14 @@ hi! def link FilerCompletion Comment
 fu! VimFilerPrompt (...) " {{{
     if !exists('b:vimfiler') | return | end
     if !exists('b:vimfiler_prompt') || exists('g:debug')
-        let b:filer = s:f.new() | end
+        let b:vimfiler_prompt = s:f.new() | end
 
-    call b:filer.loop()
+    call b:vimfiler_prompt.loop()
 endfu " }}}
+
+let g:vimfiler_prompt = {
+    \ 'edit': 'edit'
+    \}
 
 let s:f = {}
 fu! s:f.new () dict " {{{
@@ -60,6 +64,8 @@ fu! s:f.reset () dict " {{{
     let _.index        = -1
     let _.matches      = []
     let _.nomatches    = []
+
+    let _.exitLoop     = 0
     
     if _.isCompleting
         call _.stopCompletion()
@@ -73,7 +79,7 @@ fu! s:f.loop () dict " {{{
     call _.reset()
     let char = ''
 
-    while (exists('b:vimfiler'))
+    while (exists('b:vimfiler') && !_.exitLoop)
         if char == "\<Esc>" 
             break
         elseif char == "\<CR>"
@@ -87,6 +93,10 @@ fu! s:f.loop () dict " {{{
                 call _.stopCompletion() | end
             call _.input(char)
             let ms = _.getMatches()
+        end
+
+        if _.exitLoop == 1
+            break
         end
 
         call clearmatches()
@@ -129,11 +139,16 @@ fu! s:f.confirm (...) dict " {{{
         let path = _.getFileRelpath(_.currentMatch)
     end
 
-    if !empty(path)
-        exe 'VimFiler ' . path
-        call _.print('ErrorMsg', 'done')
-        " error handler here
-        call _.reset()
+    if !empty(path) 
+        if isdirectory(b:vimfiler.current_dir . path)
+            exe 'VimFiler ' . path
+            call _.reset()
+        elseif filereadable(b:vimfiler.current_dir . path)
+            let _.exitLoop = 1
+            let com = b:vimfiler.context.edit_action
+            exe com . ' ' . b:vimfiler.current_dir . path
+            call _.reset()
+        endif
     end
     catch /.*/ | echo 'confirm' . v:exception | endtry
 endfu " }}}
@@ -329,7 +344,7 @@ endfu " }}}
 fu! s:f.exit () dict " {{{
     if self.cleanMatches
         call clearmatches() | end 
-    redraw 
+    redraw | echo '' | echo
     call self.print('FilerPrompt', '_filer exited ')
     call self.print('FilerInput', ':)')
 endfu " }}}

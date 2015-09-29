@@ -16,6 +16,7 @@ nmap <buffer> i :VimFilerPrompt<CR>
 ## Mappings
 
 `<TAB>` : autocomplete; if there is only 1 match, jumps directly
+
 `<S-TAB>`: previous completion
 
 `<CR>`, `/`: jump
