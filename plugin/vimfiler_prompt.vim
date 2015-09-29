@@ -144,6 +144,9 @@ fu! s:f.confirm (...) dict " {{{
             let com = b:vimfiler.context.edit_action
             exe com . ' ' . b:vimfiler.current_dir . path
             call _.reset()
+        else
+            exe 'VimFiler ' . path
+            call _.reset()
         endif
     end
     catch /.*/ | echo 'confirm' . v:exception | endtry
