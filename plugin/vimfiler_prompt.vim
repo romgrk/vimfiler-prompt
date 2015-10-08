@@ -4,9 +4,9 @@
 " Date: 29 Sep 2015
 " !::exe [so %]
 
-com! VimFilerPrompt call VimFilerPrompt ()
+com! VimFilerPrompt call VimFilerPrompt()
 
-hi! FilerCursor   guifg=#000000 guibg=#efefef gui=NONE   
+hi! FilerCursor   guifg=#000000 guibg=#efefef gui=NONE
 
 hi! FilerSelected guifg=#efefef guibg=#599eff gui=NONE
 hi! FilerActive   guifg=#efefef guibg=#505050 gui=NONE
@@ -26,7 +26,8 @@ fu! VimFilerPrompt (...) " {{{
     call b:vimfiler_prompt.loop()
 endfu " }}}
 
-let s:f = {}
+let g:vimfiler_prompt_prototype = {}
+let s:f = g:vimfiler_prompt_prototype
 fu! s:f.new () dict " {{{
     return deepcopy(self.init())
 endfu " }}}
@@ -62,7 +63,7 @@ fu! s:f.reset () dict " {{{
     let _.nomatches    = []
 
     let _.exitLoop     = 0
-    
+
     if _.isCompleting
         call _.stopCompletion()
     end
@@ -76,7 +77,7 @@ fu! s:f.loop () dict " {{{
     let char = ''
 
     while (exists('b:vimfiler') && !_.exitLoop)
-        if char == "\<Esc>" 
+        if char == "\<Esc>"
             break
         elseif char == "\<CR>"
             call _.confirm()
@@ -110,7 +111,7 @@ fu! s:f.loop () dict " {{{
     catch /.*/
         echohl ErrorMsg
         echon '_filer: ' . v:exception | echohl None
-    endtry 
+    endtry
 endfu " }}}
 fu! s:f.input (char) dict " {{{
     try
@@ -135,7 +136,7 @@ fu! s:f.confirm (...) dict " {{{
         let path = _.getFileRelpath(_.currentMatch)
     end
 
-    if !empty(path) 
+    if !empty(path)
         if isdirectory(b:vimfiler.current_dir . path)
             exe 'VimFiler ' . path
             call _.reset()
@@ -167,7 +168,7 @@ fu! s:f.prompt () dict " {{{
             let rest = m[len(lead):] . ' '
         end
     end
-    
+
     let _.printWidth = 1
 
     call _.print('FilerPrompt', dir)
@@ -187,18 +188,18 @@ endfu " }}}
 " File matching
 fu! s:f.getMatches () dict " {{{
     try
-    let _ = self 
+    let _ = self
     let _.index = -1
     let _.matches   = []
     let _.nomatch   = []
-    
+
     let _.files   = b:vimfiler.current_files
     let _.pattern = '\M^' . escape(_.lead, '^$\')
     for k in range(len(_.files))
         if _.filter(_.files[k])
             call add(_.matches, k)
         else
-            call add(_.nomatches, k)        
+            call add(_.nomatches, k)
         end
     endfor
 
@@ -230,9 +231,9 @@ fu! s:f.stopCompletion () dict " {{{
 endfu " }}}
 " fu! s:f.complete (direction= { 1 | 0 } )  {{{
 "  _.index:  -1: initialLead
-"            0: matches[0]             
-"            1: matches[1]            
-"            2: ...                   
+"            0: matches[0]
+"            1: matches[1]
+"            2: ...
 fu! s:f.complete (direction) dict
     let _ = self
     let i   = _.index
@@ -271,7 +272,7 @@ fu! s:f.complete (direction) dict
 endfu " }}}
 
 " Completion matches manipulation
-"   ,where k:= 
+"   ,where k:=
 "       an index of _.files === b:vimfiler.current_files
 fu! s:f.setCurrentLine (lnum) dict " {{{
     let _ = self
@@ -342,7 +343,7 @@ fu! s:f.len () dict " {{{
 endfu " }}}
 fu! s:f.exit () dict " {{{
     if self.cleanMatches
-        call clearmatches() | end 
+        call clearmatches() | end
     redraw | echo '' | echo
     call self.print('FilerPrompt', '_filer exited ')
     call self.print('FilerInput', ':)')
