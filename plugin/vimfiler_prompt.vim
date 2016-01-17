@@ -280,7 +280,7 @@ fu! s:f.setCurrentLine (lnum) dict " {{{
     call setpos('.', [0, a:lnum, 0, 0])
 endfu " }}}
 fu! s:f.getLineNumber (k) dict " {{{
-    return vimfiler#get_line_number(a:k)
+    return vimfiler#get_line_number(b:vimfiler, a:k)
 endfu " }}}
 fu! s:f.getFileRelpath (k) dict " {{{
     return self.relative(self.files[a:k].action__path)
