@@ -122,35 +122,39 @@ fu! s:f.input (char) dict " {{{
     elseif c == "\<BS>"  | let _.lead = _.lead[0: -2]
     else                 | let _.lead .= c            | end
 
-    if  _.lead =~# '\.\.$' | call _.confirm('..')           | end
+    if  _.lead =~# '\.\.$' | call _.moveToParent()           | end
     catch /.*/ | echo 'input' . v:exception | endtry
 endfu " }}}
-fu! s:f.confirm (...) dict " {{{
+fu! s:f.moveToParent () dict " {{{
     try
     let _ = self
-
-    let path = _.lead
-    if a:0
-        let path = a:1
-    elseif len(_.matches)
-        let path = _.getFileRelpath(_.currentMatch)
-    end
-
-    if !empty(path)
-        if isdirectory(b:vimfiler.current_dir . path)
-            exe 'VimFiler ' . path
-            call _.reset()
-        elseif filereadable(b:vimfiler.current_dir . path)
-            let _.exitLoop = 1
-            let com = b:vimfiler.context.edit_action
-            exe com . ' ' . b:vimfiler.current_dir . path
-            call _.reset()
-        else
-            exe 'VimFiler ' . path
-            call _.reset()
-        endif
-    end
+    exe "normal \<Plug>(vimfiler_switch_to_parent_directory)"
+    call _.reset()
+    catch /.*/ | echo 'moveToParent' . v:exception | endtry
+endfu " }}}
+fu! s:f.confirm () dict " {{{
+    try
+    let _ = self
+    let func = vimfiler#mappings#smart_cursor_map(
+          \ "confirmDirectory",
+          \ "confirmFile")
+    call _[func]()
     catch /.*/ | echo 'confirm' . v:exception | endtry
+endfu " }}}
+fu! s:f.confirmDirectory () dict " {{{
+    try
+    let _ = self
+    exe "normal \<Plug>(vimfiler_cd_file)"
+    call _.reset()
+    catch /.*/ | echo 'confirmDirectory' . v:exception | endtry
+endfu " }}}
+fu! s:f.confirmFile () dict " {{{
+    try
+    let _ = self
+    exe "normal \<Plug>(vimfiler_edit_file)"
+    let _.exitLoop = 1
+    call _.reset()
+    catch /.*/ | echo 'confirmFile' . v:exception | endtry
 endfu " }}}
 fu! s:f.prompt () dict " {{{
     try
