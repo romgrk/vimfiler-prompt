@@ -12,7 +12,7 @@ Command: `VimFilerPrompt`
 Map something to `VimFilerPrompt`, and that's it.
 
 ```viml
-nmap <buffer> i :VimFilerPrompt<CR>
+autocmd FileType vimfiler nmap <buffer> i :VimFilerPrompt<CR>
 ```
 
 ## Mappings
@@ -25,16 +25,16 @@ nmap <buffer> i :VimFilerPrompt<CR>
 
 `..`: parent directory
 
-## Highlight groups 
+## Highlight groups
 
 ```viml
-hi! FilerCursor   guifg=#000000 guibg=#efefef gui=NONE   
+hi! FilerCursor   cterm=reverse ctermfg=12 ctermbg=8 guifg=#000000 guibg=#efefef gui=NONE
 
-hi! FilerSelected guifg=#efefef guibg=#599eff gui=NONE
-hi! FilerActive   guifg=#efefef guibg=#505050 gui=NONE
+hi! FilerSelected cterm=NONE ctermfg=7 ctermbg=4 guifg=#efefef guibg=#599eff gui=NONE
+hi! FilerActive   cterm=NONE ctermfg=7 ctermbg=4 guifg=#efefef guibg=#505050 gui=NONE
 
-hi! FilerMatch    guifg=NONE    guibg=NONE    gui=NONE
-hi! FilerNoMatch  guifg=#9a9a9a guibg=NONE    gui=NONE
+hi! FilerMatch    cterm=NONE ctermfg=NONE ctermbg=NONE guifg=NONE    guibg=NONE    gui=NONE
+hi! FilerNoMatch  cterm=NONE ctermfg=1    ctermbg=NONE guifg=#9a9a9a guibg=NONE    gui=NONE
 
 hi! def link FilerPrompt     Question
 hi! def link FilerInput      MoreMsg
